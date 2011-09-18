@@ -1,4 +1,4 @@
-[WordPress CLI Tools]
+## WordPress CLI Tools
 =========================
 
 Some tools for WordPress, use it with CLI for no limitation.
