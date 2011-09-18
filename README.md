@@ -1,4 +1,7 @@
 ## WordPress CLI Tools
+
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=herewithme&url=https://github.com/herewithme/wordpress-cli-tools&title=WordPress CLI Tools&language=en_GB&tags=github&category=software) 
+
 =========================
 
 Some tools for WordPress, use it with PHP-CLI for no limitation (memory, timeout)
