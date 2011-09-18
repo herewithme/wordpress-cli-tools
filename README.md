@@ -1,18 +1,18 @@
 ## WordPress CLI Tools
 =========================
 
-Some tools for WordPress, use it with CLI for no limitation.
+Some tools for WordPress, use it with PHP-CLI for no limitation (memory, timeout)
 
-Caution : CLI isn't possible for WordPress with multisite enabled.
+Caution : PHP-CLI isn't possible for WordPress with multisite enabled.
 
 ### Rebuild thumbs
 
 This script allow to regenerate all thumbs for default and custom images sizes.
 
-Usage : php-cli /path to wordpress/rebuild-thumbs.php > messages.log
+Usage : php5-cli /path to wordpress/rebuild-thumbs.php > messages.log
 
 ### Relink medias
 
 This script allow to replace in your post content, link on direct media file by the link for attachment view.
 
-Usage : php-cli /path to wordpress/relink-medias.php > messages.log
+Usage : php5-cli /path to wordpress/relink-medias.php > messages.log
