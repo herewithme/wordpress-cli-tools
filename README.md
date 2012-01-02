@@ -27,6 +27,6 @@ This script allow to change domain for a WordPress Multisites Network.
 Place this file into master folder of WordPress
 
 Usage :
-* CLI : 				php5-cli -f move-wordpress-ms.php old-domain.com new-domain.com /old-path/ /new-path/ 1
-* Web Params : 		http://old-domain.com/move-wordpress-ms.php?old_domain=old-domain.com&new_domain=new-domain.com&old_path=/old_path/&new_path=/new_path/&site_id=1
-* Hardcoded values : 	http://old-domain.com/move-wordpress-ms.php
+ * CLI : 				php5-cli -f move-wordpress-ms.php old-domain.com new-domain.com /old-path/ /new-path/ 1
+ * Web Params : 		http://old-domain.com/move-wordpress-ms.php?old_domain=old-domain.com&new_domain=new-domain.com&old_path=/old_path/&new_path=/new_path/&site_id=1
+ * Hardcoded values : 	http://old-domain.com/move-wordpress-ms.php
