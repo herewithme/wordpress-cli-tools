@@ -22,6 +22,9 @@ define('HARDCODED_SITE_ID', 1); // -1 for all websites, otherwise site ID
  /* That's all, stop editing! Next section is for advanced user !. */
 
 // PHP Configuration
+@error_reporting(E_ALL);
+@ini_set('display_startup_errors', '1');
+@ini_set('display_errors', '1');
 @ini_set('memory_limit', '512M');
 @ini_set('max_execution_time', -1);
 if ( function_exists('ignore_user_abort') ) ignore_user_abort(1);
