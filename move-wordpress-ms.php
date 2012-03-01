@@ -20,6 +20,9 @@ define('HARDCODED_NEW_PATH', '/wordpress/');
 define('HARDCODED_SITE_ID', 1); // -1 for all websites, otherwise site ID
  
  /* That's all, stop editing! Next section is for advanced user !. */
+ 
+ // WP Configuration
+define('WP_INSTALLING', true);
 
 // PHP Configuration
 @error_reporting(E_ALL);
