@@ -305,7 +305,10 @@ class Move_WordPress_MS {
 	 * @author Amaury Balmer
 	 */
 	function callback($value) {
-		return str_replace($this->_old_website_url, $this->_new_website_url, $value);
+		if ( is_string($value) )
+			return str_replace($this->_old_website_url, $this->_new_website_url, $value);
+		
+		return $value;
 	}
 
 	/**
