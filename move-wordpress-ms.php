@@ -115,6 +115,9 @@ function handleError($errno, $errstr, $errfile, $errline, array $errcontext){
 }
 set_error_handler('handleError');
 
+// Start buffer
+@ob_start();
+
 // Try to load WordPress !
 try {
 	hardFlush();
