@@ -230,7 +230,8 @@ class Move_WordPress_MS {
 			restore_current_blog();
 		}
 		
-		die('OK, don\'t forget to edit the configuration file of WordPress with the new domain !');
+		echo 'OK, don\'t forget to edit the configuration file of WordPress with the new domain !';
+		exit();
 	}
 
 	/**
