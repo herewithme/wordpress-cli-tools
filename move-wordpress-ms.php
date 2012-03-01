@@ -55,6 +55,7 @@ if ( defined('STDIN') ) {
 		'REQUEST_URI'    => $old_path.basename(__FILE__),
 		'REQUEST_METHOD' => 'GET',
 		'SCRIPT_NAME' 	 => basename(__FILE__),
+		'SCRIPT_FILENAME' 	 => basename(__FILE__),
 		'PHP_SELF' 		 => $old_path.basename(__FILE__)
 	);
 	
