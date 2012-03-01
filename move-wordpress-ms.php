@@ -226,6 +226,8 @@ class Move_WordPress_MS {
 			
 			restore_current_blog();
 		}
+		
+		die('OK, don\'t forget to edit the configuration file of WordPress with the new domain !');
 	}
 
 	/**
@@ -365,5 +367,4 @@ class Move_WordPress_MS {
 }
 
 new Move_WordPress_MS( $old_domain, $new_domain, $old_path, $new_path, $current_site_id );
-die('OK, don\'t forget to edit the configuration file of WordPress with the new domain !');
 ?>
