@@ -1,6 +1,7 @@
 <?php
 /*
  This tools allow to move a WordPress Multisite Installation.
+ Last edition : 2012-03-01 17:42
 
  If you want move a WordPress standalone, use the lighter script :
  http://farinspace.github.com/wp-migrate-gen/
