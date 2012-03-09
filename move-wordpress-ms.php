@@ -1,7 +1,7 @@
 <?php
 /*
  This tools allow to move a WordPress Multisite Installation.
- Last edition : 2012-03-07 17:17
+ Last edition : 2012-03-09 15:15
 
  If you want move a WordPress standalone, use the lighter script :
  http://farinspace.github.com/wp-migrate-gen/
@@ -257,13 +257,14 @@ class Move_WordPress_MS {
 		
 		// Wide user meta
 		$wpdb->query("UPDATE `{$wpdb->usermeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
+		$wpdb->query("UPDATE `{$wpdb->sitemeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
 	}
 
 	/**
 	 * A special method for replace old URL with new URL with manage serialization datas
 	 * Skip 2 options : user_roles and permalinks !
 	 * 
-	 * TODO ? Manage usermeta table ?
+	 * TODO ? Manage usermeta table ? sitemeta table ?
 	 */
 	function tableOptionsAdvancedReplace() {
 		global $wpdb;
