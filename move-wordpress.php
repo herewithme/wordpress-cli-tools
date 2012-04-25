@@ -15,8 +15,8 @@
 
 define('HARDCODED_OLD_DOMAIN', 'network2.lan');
 define('HARDCODED_NEW_DOMAIN', 'localhost');
-define('HARDCODED_OLD_PATH', '/');
-define('HARDCODED_NEW_PATH', '/wordpress/');
+define('HARDCODED_OLD_PATH', '');
+define('HARDCODED_NEW_PATH', '/wordpress');
  
  /* That's all, stop editing! Next section is for advanced user !. */
  
@@ -48,8 +48,8 @@ if ( defined('STDIN') ) {
 	$new_domain = ( isset($argv[2]) ) ? $argv[2] : '';
 	
 	// Path
-	$old_path = ( isset($argv[3]) ) ? $argv[3] : '/';
-	$new_path = ( isset($argv[4]) ) ? $argv[4] : '/';
+	$old_path = ( isset($argv[3]) ) ? $argv[3] : '';
+	$new_path = ( isset($argv[4]) ) ? $argv[4] : '';
 	
 	// Fake WordPress, build server array
 	$_SERVER = array(
@@ -71,8 +71,8 @@ if ( defined('STDIN') ) {
 	$new_domain = ( isset($_GET['new_domain']) ) ? stripslashes(urldecode($_GET['new_domain'])) : '';
 	
 	// Path
-	$old_path = ( isset($_GET['old_path']) ) ? stripslashes(urldecode($_GET['old_path'])) : '/';
-	$new_path = ( isset($_GET['new_path']) ) ? stripslashes(urldecode($_GET['new_path'])) : '/';
+	$old_path = ( isset($_GET['old_path']) ) ? stripslashes(urldecode($_GET['old_path'])) : '';
+	$new_path = ( isset($_GET['new_path']) ) ? stripslashes(urldecode($_GET['new_path'])) : '';
 	
 } else {
 	
