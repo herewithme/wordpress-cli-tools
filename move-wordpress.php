@@ -128,12 +128,6 @@ try {
 
  /* That's all, stop editing! Next section is for VERY advanced user !. */
 class Move_WordPress {
-	// User args
-	private $_old_domain = '';
-	private $_new_domain = '';
-	private $_old_path = '';
-	private $_new_path = '';
-	
 	// Temp variable for rename usage
 	private $_old_website_url = '';
 	private $_new_website_url = '';
@@ -151,16 +145,10 @@ class Move_WordPress {
 		if ( $old_domain == $new_domain ) {// The same domain ?
 			die('Old and new domain are the same');
 		}
-		
-		// Put on class var
-		$this->_old_domain 	= $old_domain;
-		$this->_new_domain 	= $new_domain;
-		$this->_old_path 	= $old_path;
-		$this->_new_path 	= $new_path;
 
 		// Queries with path
-		$this->_old_website_url = $old_blog->domain . $old_blog->path;
-		$this->_new_website_url = $blog->domain . $blog->path;
+		$this->_old_website_url = $old_domain . $old_path;
+		$this->_new_website_url = $new_domain . $new_path;
 		$this->genericReplace();
 		$this->tableOptionsAdvancedReplace();
 		
