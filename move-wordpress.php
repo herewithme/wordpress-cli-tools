@@ -144,7 +144,7 @@ class Move_WordPress {
 	function __construct( $old_domain = '', $new_domain = '', $old_path = '/', $new_path = '/' ) {
 		global $wpdb;
 		
-		if ( empty($old_domain) || empty($new_domain) || empty($old_path) || empty($new_path) ) {// Values missing ?
+		if ( empty($old_domain) || empty($new_domain) ) {// Values missing ?
 			die('Missing old or new domain');
 		}
 
