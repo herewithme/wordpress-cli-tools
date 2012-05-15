@@ -171,10 +171,7 @@ class Move_WordPress {
 		$wpdb->query("UPDATE `{$wpdb->links}` SET `link_url` = REPLACE(`link_url`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "');");
 		$wpdb->query("UPDATE `{$wpdb->postmeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
 		$wpdb->query("UPDATE `{$wpdb->commentmeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
-		
-		// Wide user meta
 		$wpdb->query("UPDATE `{$wpdb->usermeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
-		$wpdb->query("UPDATE `{$wpdb->sitemeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
 	}
 
 	/**
