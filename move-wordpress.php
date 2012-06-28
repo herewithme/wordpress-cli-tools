@@ -142,8 +142,8 @@ class Move_WordPress {
 			die('Missing old or new domain');
 		}
 
-		if ( $old_domain == $new_domain ) {// The same domain ?
-			die('Old and new domain are the same');
+		if ( $old_domain == $new_domain && $old_path == $new_path ) {// The same domain and same path ?
+			die('Old and new domain/path are the same');
 		}
 
 		// Queries with path
