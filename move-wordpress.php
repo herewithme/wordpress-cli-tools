@@ -8,9 +8,9 @@
  Place this file into master folder of WordPress
  
  Usage :
-	CLI : 				php5-cli -f move-wordpress-ms.php old-domain.com new-domain.com /old-path/ /new-path/
-	Web Params : 		http://old-domain.com/move-wordpress-ms.php?old_domain=old-domain.com&new_domain=new-domain.com&old_path=/old_path/&new_path=/new_path/
-	Hardcoded values : 	http://old-domain.com/move-wordpress-ms.php
+	CLI : 				php5-cli -f move-wordpress.php old-domain.com new-domain.com /old-path/ /new-path/
+	Web Params : 		http://old-domain.com/move-wordpress.php?old_domain=old-domain.com&new_domain=new-domain.com&old_path=/old_path/&new_path=/new_path/
+	Hardcoded values : 	http://old-domain.com/move-wordpress.php
  */
 
 define('HARDCODED_OLD_DOMAIN', 'network2.lan');
@@ -149,8 +149,17 @@ class Move_WordPress {
 		// Queries with path
 		$this->_old_website_url = $old_domain . $old_path;
 		$this->_new_website_url = $new_domain . $new_path;
+
+		// Unserialized datas
 		$this->genericReplace();
+
+		// Serialized options
 		$this->tableOptionsAdvancedReplace();
+
+		// Serialized metas
+		$this->tableMetaAdvancedReplace( 'comment' );
+		$this->tableMetaAdvancedReplace( 'post' );
+		$this->tableMetaAdvancedReplace( 'user' );
 		
 		echo 'OK, don\'t forget to edit the configuration file of WordPress with the new domain !';
 		exit();
@@ -178,12 +187,11 @@ class Move_WordPress {
 	 * A special method for replace old URL with new URL with manage serialization datas
 	 * Skip 2 options : user_roles and permalinks !
 	 * 
-	 * TODO ? Manage usermeta table ? sitemeta table ?
 	 */
 	function tableOptionsAdvancedReplace() {
 		global $wpdb;
 
-		// Widgets & options
+		// Options
 		$options = $wpdb->get_results("SELECT * 
 			FROM `{$wpdb->options}`
 			WHERE option_name NOT LIKE '\_%' 
@@ -191,6 +199,10 @@ class Move_WordPress {
 			AND option_name != 'permalink_structure'
 			AND option_value REGEXP '^([adObis]:|N;)'
 		");
+
+		if ( $options == false || !is_array($options) ) {
+			return false;
+		}
 		
 		foreach ($options as $option) {
 			if (is_serialized($option->option_value)) {
@@ -216,6 +228,57 @@ class Move_WordPress {
 				}
 			}
 		}
+	}
+
+	/**
+	 * A special method for replace old URL with new URL with manage serialization datas on any meta tables :)
+	 * 
+	 */
+	function tableMetaAdvancedReplace( $meta_type = '' ) {
+		global $wpdb;
+
+		if ( ! $table = _get_meta_table($meta_type) )
+			return false;
+
+		// Meta table
+		$metas = $wpdb->get_results("SELECT * 
+			FROM `{$table}`
+			WHERE 1 = 1
+			AND meta_key REGEXP '^([adObis]:|N;)'
+		");
+
+		if ( $metas == false || !is_array($metas) ) {
+			return false;
+		}
+
+		$column_obj_id = esc_sql($meta_type . '_id');
+		
+		foreach ($metas as $meta) {
+			if (is_serialized($meta->meta_value)) {
+				if (is_serialized_string($meta->meta_value)) {
+					$meta_value = maybe_unserialize($meta->meta_value);
+					$new_value = str_replace($this->_old_website_url, $this->_new_website_url, $meta_value);
+					if ($new_value != $meta_value) {
+						update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, maybe_serialize($new_value) );
+					}
+				} else {// A real array to map ?
+					$meta_value = maybe_unserialize($meta->meta_value);
+					if (is_array($meta_value)) {
+						$new_value = $this->arrayMap(array(&$this, 'callback'), $meta_value);
+						if ($new_value != $meta_value) {+
+							update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, $new_value );
+						}
+					}
+				}
+			} else {// String
+				$new_value = str_replace($this->_old_website_url, $this->_new_website_url, $meta->meta_value);
+				if ($new_value != $meta->meta_value) {
+					update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, $new_value );
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
