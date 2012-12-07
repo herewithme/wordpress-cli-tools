@@ -326,4 +326,3 @@ class Move_WordPress {
 }
 
 new Move_WordPress( $old_domain, $new_domain, $old_path, $new_path );
-?>

@@ -3,7 +3,7 @@
  This tools allow to move a WordPress Multisite Installation.
 
  If you want move a WordPress standalone, use the lighter script :
- http://farinspace.github.com/wp-migrate-gen/
+https://github.com/herewithme/wordpress-cli-tools/blob/master/move-wordpress.php
  
  Place this file into master folder of WordPress
  
@@ -223,13 +223,27 @@ class Move_WordPress_MS {
 			$this->_old_website_url = $old_blog->domain . $old_blog->path;
 			$this->_new_website_url = $blog->domain . $blog->path;
 			$this->genericReplace();
+
+			// Serialized options
 			$this->tableOptionsAdvancedReplace();
+
+			// Serialized metas
+			$this->tableMetaAdvancedReplace( 'comment' );
+			$this->tableMetaAdvancedReplace( 'post' );
+			$this->tableMetaAdvancedReplace( 'user' );
 			
 			// Queries without path
 			$this->_old_website_url = $old_blog->domain;
 			$this->_new_website_url = $blog->domain;
 			$this->genericReplace();
+
+			// Serialized options
 			$this->tableOptionsAdvancedReplace();
+
+			// Serialized metas
+			$this->tableMetaAdvancedReplace( 'comment' );
+			$this->tableMetaAdvancedReplace( 'post' );
+			$this->tableMetaAdvancedReplace( 'user' );
 			
 			restore_current_blog();
 		}
@@ -253,7 +267,7 @@ class Move_WordPress_MS {
 		$wpdb->query("UPDATE `{$wpdb->links}` SET `link_url` = REPLACE(`link_url`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "');");
 		$wpdb->query("UPDATE `{$wpdb->postmeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
 		$wpdb->query("UPDATE `{$wpdb->commentmeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
-		
+				
 		// Wide user meta
 		$wpdb->query("UPDATE `{$wpdb->usermeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
 		$wpdb->query("UPDATE `{$wpdb->sitemeta}` SET `meta_value` = REPLACE(`meta_value`, '" . $this->_old_website_url . "', '" . $this->_new_website_url . "') WHERE `meta_value` NOT REGEXP '^([adObis]:|N;)';");
@@ -263,12 +277,11 @@ class Move_WordPress_MS {
 	 * A special method for replace old URL with new URL with manage serialization datas
 	 * Skip 2 options : user_roles and permalinks !
 	 * 
-	 * TODO ? Manage usermeta table ? sitemeta table ?
 	 */
 	function tableOptionsAdvancedReplace() {
 		global $wpdb;
 
-		// Widgets & options
+		// Options
 		$options = $wpdb->get_results("SELECT * 
 			FROM `{$wpdb->options}`
 			WHERE option_name NOT LIKE '\_%' 
@@ -276,6 +289,10 @@ class Move_WordPress_MS {
 			AND option_name != 'permalink_structure'
 			AND option_value REGEXP '^([adObis]:|N;)'
 		");
+
+		if ( $options == false || !is_array($options) ) {
+			return false;
+		}
 		
 		foreach ($options as $option) {
 			if (is_serialized($option->option_value)) {
@@ -301,6 +318,57 @@ class Move_WordPress_MS {
 				}
 			}
 		}
+	}
+
+	/**
+	 * A special method for replace old URL with new URL with manage serialization datas on any meta tables :)
+	 * 
+	 */
+	function tableMetaAdvancedReplace( $meta_type = '' ) {
+		global $wpdb;
+
+		if ( ! $table = _get_meta_table($meta_type) )
+			return false;
+
+		// Meta table
+		$metas = $wpdb->get_results("SELECT * 
+			FROM `{$table}`
+			WHERE 1 = 1
+			AND meta_key REGEXP '^([adObis]:|N;)'
+		");
+
+		if ( $metas == false || !is_array($metas) ) {
+			return false;
+		}
+
+		$column_obj_id = esc_sql($meta_type . '_id');
+		
+		foreach ($metas as $meta) {
+			if (is_serialized($meta->meta_value)) {
+				if (is_serialized_string($meta->meta_value)) {
+					$meta_value = maybe_unserialize($meta->meta_value);
+					$new_value = str_replace($this->_old_website_url, $this->_new_website_url, $meta_value);
+					if ($new_value != $meta_value) {
+						update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, maybe_serialize($new_value) );
+					}
+				} else {// A real array to map ?
+					$meta_value = maybe_unserialize($meta->meta_value);
+					if (is_array($meta_value)) {
+						$new_value = $this->arrayMap(array(&$this, 'callback'), $meta_value);
+						if ($new_value != $meta_value) {+
+							update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, $new_value );
+						}
+					}
+				}
+			} else {// String
+				$new_value = str_replace($this->_old_website_url, $this->_new_website_url, $meta->meta_value);
+				if ($new_value != $meta->meta_value) {
+					update_metadata( $meta_type, $meta->$column_obj_id, $meta->meta_key, $new_value );
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -379,4 +447,3 @@ class Move_WordPress_MS {
 }
 
 new Move_WordPress_MS( $old_domain, $new_domain, $old_path, $new_path, $current_site_id );
-?>
