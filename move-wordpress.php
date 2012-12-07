@@ -244,7 +244,7 @@ class Move_WordPress {
 		$metas = $wpdb->get_results("SELECT * 
 			FROM `{$table}`
 			WHERE 1 = 1
-			AND meta_key REGEXP '^([adObis]:|N;)'
+			AND meta_value REGEXP '^([adObis]:|N;)'
 		");
 
 		if ( $metas == false || !is_array($metas) ) {
