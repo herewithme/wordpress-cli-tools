@@ -17,6 +17,7 @@ define('HARDCODED_OLD_DOMAIN', 'network2.lan');
 define('HARDCODED_NEW_DOMAIN', 'localhost');
 define('HARDCODED_OLD_PATH', '');
 define('HARDCODED_NEW_PATH', '/wordpress');
+define('HARDCODED_WP_PATH', false);
  
  /* That's all, stop editing! Next section is for advanced user !. */
  
@@ -50,6 +51,9 @@ if ( defined('STDIN') ) {
 	// Path
 	$old_path = ( isset($argv[3]) ) ? $argv[3] : '';
 	$new_path = ( isset($argv[4]) ) ? $argv[4] : '';
+
+	// WP Path
+	$wp_path = ( isset($argv[5]) ) ? $argv[5] : false;
 	
 	// Fake WordPress, build server array
 	$_SERVER = array(
@@ -73,6 +77,9 @@ if ( defined('STDIN') ) {
 	// Path
 	$old_path = ( isset($_GET['old_path']) ) ? stripslashes(urldecode($_GET['old_path'])) : '';
 	$new_path = ( isset($_GET['new_path']) ) ? stripslashes(urldecode($_GET['new_path'])) : '';
+
+	// WP Path
+	$wp_path = ( isset($_GET['wp_path']) ) ? stripslashes($_GET['wp_path']) : false;
 	
 } else {
 	
@@ -85,6 +92,9 @@ if ( defined('STDIN') ) {
 	// Path
 	$old_path = HARDCODED_OLD_PATH;
 	$new_path = HARDCODED_NEW_PATH;
+
+	// WP Path
+	$wp_path = HARDCODED_WP_PATH;
 	
 }
 
@@ -116,10 +126,15 @@ set_error_handler('handleError');
 // Start buffer
 @ob_start();
 
+// User or local path ?
+if ( $wp_path == false ) {
+	$wp_path = dirname(__FILE__);
+}
+
 // Try to load WordPress !
 try {
 	hardFlush();
-	require (dirname(__FILE__) . '/wp-load.php');
+	require ( rtrim('/', $wp_path) . '/wp-load.php');
 } catch (ErrorException $e) {
 	//var_dump($e->getMessage()); // Debug
 	if ( strpos( $e->getMessage(), 'headers' ) !== false )
