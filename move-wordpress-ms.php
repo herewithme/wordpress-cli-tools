@@ -144,7 +144,7 @@ if ( $wp_path == false ) {
 // Try to load WordPress !
 try {
 	hardFlush();
-	require ( rtrim('/', $wp_path) . '/wp-load.php');
+	require ( rtrim($wp_path, '/') . '/wp-load.php');
 } catch (ErrorException $e) {
 	//var_dump($e->getMessage()); // Debug
 	if ( strpos( $e->getMessage(), 'headers' ) !== false )
