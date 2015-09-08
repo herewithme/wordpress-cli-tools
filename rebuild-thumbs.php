@@ -73,15 +73,18 @@ foreach( $attachments as $attachment ) {
 			
 	// Regen the attachment
 	if ( FALSE !== $fullsizepath && @file_exists( $fullsizepath ) ) {
-		if( wp_update_attachment_metadata( $attachment->ID, wp_generate_attachment_metadata( $attachment->ID, $fullsizepath ) ) == false ) {
-			// Success
-			echo "\n".sprintf(__('%d/%d : Regeneration OK for the media %d : %s.'), $i, $total, $attachment->ID, $attachment->post_title);
-			hardFlush();
-		} else {
+		$meta_data = wp_generate_attachment_metadata( $attachment->ID, $fullsizepath );
+		if ( is_wp_error($meta_data) || empty($meta_data) ) {
 			// Echec
-			echo "\n".sprintf(__('%d/%d : An error occured with the media %d :  %s. (updating post meta)'), $i, $total, $attachment->ID, $attachment->post_title);
+			echo "\n".sprintf(__('%d/%d : An error occured with the media %d :  %s. (wp_generate_attachment_metadata failed)'), $i, $total, $attachment->ID, $attachment->post_title);
 			hardFlush();
+			continue;
 		}
+		
+		wp_update_attachment_metadata( $attachment->ID, $meta_data );
+		
+		echo "\n".sprintf(__('%d/%d : Regeneration OK for the media %d : %s.'), $i, $total, $attachment->ID, $attachment->post_title);
+		hardFlush();
 	} else {
 		// Echec
 		echo "\n".sprintf(__('%d/%d : An error occured with the media %d : %s. (full path)'), $i, $total, $attachment->ID, $attachment->post_title);
