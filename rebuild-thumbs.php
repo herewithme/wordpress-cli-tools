@@ -1,10 +1,39 @@
 <?php
-@ini_set( 'memory_limit', '512M' );
-@ini_set( 'max_execution_time', -1 );
+if ( php_sapi_name() !== 'cli' || isset( $_SERVER['REMOTE_ADDR'] ) ) {
+	die( 'CLI Only' );
+}
+
+// Get first arg
+if ( ! isset( $argv ) || count( $argv ) < 2 ) {
+	echo "Missing parameters.\n";
+	echo "script usage: phprebuild-thumbs.php [domain] [path] \n";
+	die();
+}
+
+//Domain/path
+$domain = ( isset( $argv[1] ) ) ? $argv[1] : '';
+$path = ( isset( $argv[2] ) ) ? $argv[2] : '/';
+
+// Fake WordPress, build server array
+$_SERVER = array(
+	'HTTP_HOST'       => $domain,
+	'SERVER_NAME'     => $domain,
+	'REQUEST_URI'     => $path,
+	'REQUEST_METHOD'  => 'GET',
+	'SCRIPT_NAME'     => basename( __FILE__ ),
+	'SCRIPT_FILENAME' => basename( __FILE__ ),
+	'PHP_SELF'        => basename( __FILE__ )
+);
+
+@ini_set( 'memory_limit', - 1 );
+@ini_set( 'display_errors', 1 );
 
 // Place this file into master folder of WordPress
 require( dirname(__FILE__) . '/wp-load.php' );
 require_once(ABSPATH . 'wp-admin/includes/admin.php');
+
+@ini_set( 'memory_limit', - 1 );
+@ini_set( 'display_errors', 1 );
 
 function hardFlush() { 
     // Like said in PHP description above, some version of IE (7.0 for example) 
